@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Type Wellness Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        header h1 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        header p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .input-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #34495e;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            min-width: 150px;
+        }
+        #recommendationsOutput {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: none; /* Hidden by default */
+        }
+        .section {
+            background-color: #fdfefe;
+            border: 1px solid #eaf2f8;
+            border-left: 4px solid #3498db; /* Blue for general sections */
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .section.ailment-support {
+            border-left-color: #27ae60; /* Green for ailment support section */
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #2980b9;
+            font-size: 1.3em;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .section.ailment-support h2 {
+            color: #229954;
+        }
+         .section h3 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #16a085;
+            font-size: 1.1em;
+        }
+        .section h4 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #27ae60;
+            font-size: 1.05em;
+        }
+        .section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .section ul li {
+            background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%232ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>') no-repeat left center;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .avoid-list ul li {
+             background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>') no-repeat left center;
+        }
+        .ailment-support ul li {
+            background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%2327ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>') no-repeat left center;
+            padding-left: 22px;
+            margin-bottom: 10px;
+        }
+        .ailment-support ul li .food-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .ailment-support ul li .food-note {
+            display: block;
+            font-size: 0.9em;
+            color: #555;
+            padding-left: 0;
+        }
+        .daily-rec p {
+            margin: 5px 0 15px 0;
+            font-style: italic;
+             color: #666;
+        }
+         .scientific-info {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 20px;
+         }
+        .specific-disclaimer {
+            font-size: 0.85em;
+            color: #d35400;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fef5e7;
+            border: 1px solid #fdebd0;
+            border-left: 3px solid #d35400;
+            border-radius: 4px;
+        }
+         .feedback-section {
+            text-align:center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color:#e8f6f3;
+            border: 1px solid #d0e9e1;
+            border-radius:5px;
+         }
+         .feedback-section h3 {
+            margin-top: 0;
+            color: #138d75;
+         }
+         .feedback-section p {
+             color: #486966;
+             margin-bottom: 15px;
+         }
+         /* Star Rating Styles */
+        .star-rating {
+            direction: ltr;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        .star-rating span {
+            cursor: pointer;
+            color: #ddd;
+            padding: 0 2px;
+            transition: color 0.2s;
+        }
+        .star-rating span:hover,
+        .star-rating span.hover-active {
+            color: #f39c12 !important;
+        }
+        .star-rating span:hover ~ span,
+        .star-rating span.hover-active ~ span {
+             color: #f39c12 !important;
+        }
+        .star-rating span.selected {
+            color: #f39c12;
+        }
+        .star-rating span.selected ~ span {
+            color: #f39c12;
+        }
+        #ratingMessage {
+            font-style: italic;
+            color: #16a085;
+            margin-bottom: 15px;
+            min-height: 1.2em;
+        }
+         .feedback-section a.button {
+            display:inline-block;
+            padding:10px 20px;
+            background-color:#1abc9c;
+            color:white;
+            text-decoration:none;
+            border-radius:5px;
+            font-weight:bold;
+            transition: background-color 0.3s ease;
+         }
+         .feedback-section a.button:hover {
+            background-color: #16a085;
+         }
+         .disclaimer {
+            font-size: 0.8em;
+            color: #c0392b;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fceded;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            text-align: center;
+         }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍓 Blood Type Wellness Guide 🥕</h1>
+            <p>Personalized fruit & vegetable recommendations for skin and organ health based on your blood type, plus general wellness tips.</p>
+        </header>
+
+        <section class="input-section">
+            <label for="bloodGroupSelect">Select Your Blood Group:</label>
+            <select id="bloodGroupSelect">
+                <option value="">-- Select --</option>
+                <option value="O">O</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="AB">AB</option>
+            </select>
+        </section>
+
+        <div id="recommendationsOutput">
+            <h2 id="selectedBloodTypeHeader" style="text-align:center; color: #16a085;">Recommendations for Blood Type: <span id="selectedBloodType"></span></h2>
+
+            <div class="section skin-health">
+                <h2>✨ Skin Health Boosters</h2>
+                <p>Fruits and vegetables beneficial for skin texture, hydration, and clarity (based on blood type theory):</p>
+                <ul id="skinHealthList"></ul>
+            </div>
+
+            <div class="section organ-benefits">
+                <h2>❤️ Organ-Specific Support</h2>
+                <p>(Based on blood type theory)</p>
+                <div>
+                    <h3>Liver Detox Support</h3>
+                    <ul id="liverList"></ul>
+                </div>
+                <div>
+                    <h3>Heart Health Support</h3>
+                    <ul id="heartList"></ul>
+                </div>
+                <div>
+                    <h3>Kidney Health Support</h3>
+                    <ul id="kidneyList"></ul>
+                </div>
+                 <div>
+                    <h3>Digestive System Support</h3>
+                    <ul id="digestiveList"></ul>
+                </div>
+            </div>
+
+             <div class="section daily-rec">
+                <h2>📅 Daily Pick & Meal Idea</h2>
+                <p>(Based on blood type theory)</p>
+                <p><strong>Today's Suggestion:</strong> <span id="dailyPick"></span></p>
+                <p><strong>Tip/Idea:</strong> <span id="dailyTip"></span></p>
+            </div>
+
+            <div class="section avoid-list">
+                <h2>🚫 Foods to Limit or Avoid</h2>
+                <p>These fruits and vegetables may be less beneficial for your blood type (based on blood type theory):</p>
+                <ul id="avoidList"></ul>
+            </div>
+
+            <div class="section scientific-info">
+                 <h2>🔬 Scientific Context & Theory (Blood Type Diet)</h2>
+                 <p id="scientificSnippet"></p>
+                 <p><em>This information is often associated with the Blood Type Diet theory, popularized by Dr. Peter D’Adamo.</em></p>
+            </div>
+
+            <div class="section ailment-support">
+                <h2>🌿 General Wellness & Symptom Support</h2>
+                <p>The following are general suggestions for fruits and vegetables known for properties that <strong>may</strong> support overall wellness or help alleviate symptoms of common minor discomforts. This information is <strong>not blood-type specific</strong>.</p>
+                <div class="specific-disclaimer">
+                    <strong>Important Note:</strong> This section is for informational purposes only and does not constitute medical advice. These foods are not intended to diagnose, treat, cure, or prevent any disease. Always consult with a healthcare professional for any health concerns or before making any changes to your diet or treatment plan, especially if you have pre-existing conditions or are taking medication.
+                </div>
+                <div id="commonAilmentSupport">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- *********************************** -->
+            <!-- ***** FEEDBACK & RATING SECTION ***** -->
+            <!-- *********************************** -->
+            <div class="feedback-section">
+                <h3>🌟 Enjoying the App? Help Me Improve! 🌟</h3>
+                <p>How would you rate your experience with this app?</p>
+                <div class="star-rating" id="starRatingContainer">
+                    <span data-value="5">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="1">★</span>
+                </div>
+                <div id="ratingMessage"></div>
+                <p>Please click the button below to submit your rating and share more detailed feedback through our quick survey.</p>
+                <!-- 
+                    *****************************************************************************************************
+                    *****************************************************************************************************
+                    CRITICAL STEP FOR YOU:
+                    YOU MUST REPLACE THE TEXT "!!! YOU_MUST_REPLACE_THIS_WITH_YOUR_OWN_ACTUAL_SURVEY_LINK !!!" BELOW
+                    WITH THE ACTUAL WEB LINK (URL) TO THE SURVEY YOU CREATED (e.g., on Google Forms).
+                    IF YOU DO NOT DO THIS, THE BUTTON WILL NOT WORK. I CANNOT DO THIS STEP FOR YOU.
+                    Example of a real link: "https://docs.google.com/forms/d/e/A_LONG_ID/viewform?usp=sf_link"
+                    *****************************************************************************************************
+                    *****************************************************************************************************
+                -->
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScumrTZFcHnpCPHlAVidjSWNNYwCQK3U29XGgHvDSYv8NC_qw/viewform?usp=sharing" target="_blank" class="button">Give Feedback & Rate Now</a>
+            </div>
+            <!-- *********************************** -->
+            <!-- ******* END FEEDBACK SECTION ****** -->
+            <!-- *********************************** -->
+
+             <div class="disclaimer">
+                 <strong>Overall Disclaimer:</strong> The Blood Type Diet is a theory and lacks widespread scientific consensus. Information provided by this app, including blood-type specific recommendations and general wellness suggestions, is for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition or dietary changes.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bloodTypeData = {
+            'O': {
+                skin: ["Plums", "Figs", "Berries (Blueberries, Cherries)", "Kale", "Spinach", "Broccoli"],
+                organ_benefits: { liver: ["Artichoke", "Dandelion Greens", "Garlic", "Beets"], heart: ["Kale", "Spinach", "Onions", "Garlic"], kidney: ["Kelp", "Parsley", "Berries (esp. Cranberries - unsweetened)"], digestion: ["Sweet Potatoes", "Pumpkin", "Parsnips", "Ginger"]},
+                daily_rec: { item: "Kale Smoothie", tip: "Blend kale with blueberries and a splash of water for a nutrient-dense start." },
+                avoid: ["Oranges", "Strawberries", "Melon (Cantaloupe, Honeydew)", "Corn", "Potatoes", "Cabbage", "Cauliflower", "Avocado", "Mushrooms (Shiitake)"],
+                scientific_snippet: "Theory suggests Type O benefits from lean protein and specific vegetables/fruits, potentially linked to ancestral hunter-gatherer diets. May need to limit grains and dairy."
+            },
+            'A': {
+                skin: ["Apricots", "Berries (Blueberries, Blackberries)", "Carrots", "Spinach", "Broccoli"],
+                organ_benefits: { liver: ["Artichoke", "Lemon", "Garlic", "Broccoli"], heart: ["Garlic", "Onions", "Spinach", "Broccoli", "Carrots"], kidney: ["Cranberries (unsweetened)", "Onions", "Blueberries"], digestion: ["Pineapple", "Ginger", "Carrots", "Okra", "Spinach"]},
+                daily_rec: { item: "Broccoli & Carrot Stir-fry", tip: "Lightly steam or stir-fry with garlic and ginger. Serve with brown rice or tofu." },
+                avoid: ["Tomatoes", "Potatoes", "Peppers", "Cabbage (Red & White)", "Bananas", "Oranges", "Mangoes"],
+                scientific_snippet: "Theory posits Type A individuals may thrive on vegetarian-based diets, aligning with early agrarian societies. Emphasis on fruits, vegetables, legumes, and whole grains."
+            },
+            'B': {
+                 skin: ["Pineapple", "Papaya", "Grapes", "Leafy Greens (Kale, Collards - avoid spinach)", "Sweet Potatoes"],
+                organ_benefits: { liver: ["Beets", "Carrots", "Leafy Greens", "Lemon"], heart: ["Sweet Potatoes", "Peppers (Green, Red, Yellow)", "Kale", "Broccoli"], kidney: ["Cranberries (unsweetened)", "Parsley", "Cucumber", "Grapes"], digestion: ["Papaya", "Pineapple", "Ginger", "Licorice Root (as tea)", "Yams"]},
+                daily_rec: { item: "Roasted Sweet Potatoes", tip: "Cube sweet potatoes, toss with olive oil and rosemary, and roast until tender." },
+                avoid: ["Tomatoes", "Corn", "Avocado", "Artichoke", "Pumpkin", "Radishes", "Olives", "Pomegranate", "Coconut"],
+                scientific_snippet: "Theory suggests Type B has a tolerant digestive system, potentially linked to nomadic groups. Can often handle dairy and a wider variety of foods, but should avoid specific items like chicken and corn."
+            },
+            'AB': {
+                skin: ["Grapes", "Plums", "Berries (Cherries, Cranberries)", "Leafy Greens (Kale, Spinach)", "Celery", "Cucumber"],
+                organ_benefits: { liver: ["Lemon", "Beets", "Broccoli", "Garlic"], heart: ["Garlic", "Onions", "Celery", "Hawthorn Berries (as supplement/tea often)", "Kale"], kidney: ["Cranberries (unsweetened)", "Cucumber", "Celery", "Watermelon"], digestion: ["Pineapple", "Papaya", "Kefir/Yogurt (if dairy tolerated)", "Ginger", "Grapefruit"]},
+                daily_rec: { item: "Cucumber & Celery Juice", tip: "Juice fresh cucumber and celery stalks for a hydrating and kidney-supportive drink." },
+                avoid: ["Oranges", "Bananas", "Corn", "Artichoke", "Peppers (strong varieties)", "Radishes", "Lima Beans"],
+                scientific_snippet: "Theory views Type AB as a modern blend of A and B. Diet recommendations often combine aspects of both, emphasizing vegetables, tofu, seafood, and cultured dairy."
+            }
+        };
+
+        const commonAilmentSupportData = [
+            { ailment: "Immune System Support (e.g., during cold/flu season)", foods: [{ name: "Citrus Fruits (Oranges, Lemons, Grapefruit)", note: "Rich in Vitamin C, an antioxidant that supports immune function." }, { name: "Garlic", note: "Contains allicin, known for immune-boosting and antimicrobial properties." }, { name: "Ginger", note: "Anti-inflammatory, can soothe sore throats and support immune response." }, { name: "Berries (Blueberries, Strawberries, Raspberries)", note: "Packed with antioxidants that help protect cells." }, { name: "Spinach", note: "Rich in Vitamin C, antioxidants, and beta carotene, which may increase infection-fighting ability of our immune systems." }]},
+            { ailment: "Mild Digestive Discomfort (e.g., bloating, occasional indigestion)", foods: [{ name: "Ginger", note: "Traditionally used to soothe an upset stomach and aid digestion." }, { name: "Peppermint (often as tea)", note: "May help relax digestive muscles and relieve bloating." }, { name: "Papaya", note: "Contains papain, an enzyme that can aid in protein digestion." }, { name: "Fennel", note: "Known to help reduce gas and bloating; can be eaten raw or as seeds." }]},
+            { ailment: "Support for Regular Bowel Movements (e.g., occasional constipation)", foods: [{ name: "Prunes/Plums", note: "High in fiber and contain sorbitol, a natural substance that can help with bowel movements." }, { name: "Apples (with skin)", note: "Good source of pectin, a type of soluble fiber that aids digestion." }, { name: "Pears (with skin)", note: "Provide fiber and natural sugars that can help with regularity." }, { name: "Kiwifruit", note: "High in fiber and actinidin, an enzyme that may improve bowel function." }]},
+            { ailment: "Support Against Minor Inflammation", foods: [{ name: "Turmeric (often combined with black pepper for better absorption)", note: "Contains curcumin, a compound with potent anti-inflammatory properties." }, { name: "Ginger", note: "Well-known for its anti-inflammatory effects." }, { name: "Berries", note: "Antioxidants like anthocyanins have anti-inflammatory effects." }, { name: "Pineapple", note: "Contains bromelain, an enzyme with anti-inflammatory properties." }, { name: "Leafy Greens (Spinach, Kale)", note: "Rich in antioxidants and compounds that may help counter inflammation."}]}
+        ];
+
+        const selectElement = document.getElementById('bloodGroupSelect');
+        const outputDiv = document.getElementById('recommendationsOutput');
+        const selectedBloodTypeSpan = document.getElementById('selectedBloodType');
+        const selectedBloodTypeHeader = document.getElementById('selectedBloodTypeHeader');
+        const skinList = document.getElementById('skinHealthList');
+        const liverList = document.getElementById('liverList');
+        const heartList = document.getElementById('heartList');
+        const kidneyList = document.getElementById('kidneyList');
+        const digestiveList = document.getElementById('digestiveList');
+        const dailyPickSpan = document.getElementById('dailyPick');
+        const dailyTipSpan = document.getElementById('dailyTip');
+        const avoidListUL = document.getElementById('avoidList'); 
+        const scientificSnippetP = document.getElementById('scientificSnippet');
+        const commonAilmentSupportDiv = document.getElementById('commonAilmentSupport');
+
+        const starRatingContainer = document.getElementById('starRatingContainer');
+        const stars = Array.from(starRatingContainer.children).reverse(); // Reverse for 1-5 indexing
+        const ratingMessage = document.getElementById('ratingMessage');
+        let currentRating = 0;
+
+        selectElement.addEventListener('change', displayRecommendations);
+
+        function displayRecommendations() {
+            const selectedGroup = selectElement.value;
+            if (!selectedGroup) {
+                outputDiv.style.display = 'none'; 
+                return;
+            }
+            const data = bloodTypeData[selectedGroup];
+            if (!data) {
+                console.error("Data not found for blood group:", selectedGroup);
+                outputDiv.style.display = 'none';
+                return;
+            }
+            selectedBloodTypeSpan.textContent = selectedGroup;
+            selectedBloodTypeHeader.style.display = 'block';
+            populateList(skinList, data.skin);
+            populateList(liverList, data.organ_benefits.liver);
+            populateList(heartList, data.organ_benefits.heart);
+            populateList(kidneyList, data.organ_benefits.kidney);
+            populateList(digestiveList, data.organ_benefits.digestion);
+            populateList(avoidListUL, data.avoid, true); 
+            dailyPickSpan.textContent = data.daily_rec.item;
+            dailyTipSpan.textContent = data.daily_rec.tip;
+            scientificSnippetP.textContent = data.scientific_snippet;
+            populateAilmentSupportList();
+            outputDiv.style.display = 'block';
+            currentRating = 0;
+            highlightStars(0);
+            ratingMessage.textContent = "";
+        }
+
+        function populateList(ulElement, items, isAvoidList = false) {
+            ulElement.innerHTML = ''; 
+             if (!items || items.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No specific recommendations listed for this category.';
+                li.style.paddingLeft = '0'; 
+                li.style.background = 'none';
+                ulElement.appendChild(li);
+                return;
+            }
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                ulElement.appendChild(li);
+            });
+        }
+
+        function populateAilmentSupportList() {
+            commonAilmentSupportDiv.innerHTML = '';
+            commonAilmentSupportData.forEach(ailmentCategory => {
+                const categoryTitle = document.createElement('h4');
+                categoryTitle.textContent = ailmentCategory.ailment;
+                commonAilmentSupportDiv.appendChild(categoryTitle);
+                const ul = document.createElement('ul');
+                ailmentCategory.foods.forEach(foodItem => {
+                    const li = document.createElement('li');
+                    const foodNameSpan = document.createElement('span');
+                    foodNameSpan.className = 'food-name';
+                    foodNameSpan.textContent = foodItem.name + ": ";
+                    li.appendChild(foodNameSpan);
+                    const foodNoteSpan = document.createElement('span');
+                    foodNoteSpan.className = 'food-note';
+                    foodNoteSpan.textContent = foodItem.note;
+                    li.appendChild(foodNoteSpan);
+                    ul.appendChild(li);
+                });
+                commonAilmentSupportDiv.appendChild(ul);
+            });
+        }
+
+        stars.forEach((star, index) => {
+            star.addEventListener('mouseover', function() {
+                stars.forEach((s, i) => {
+                    s.classList.remove('selected');
+                    s.classList.remove('hover-active');
+                    if (i <= index) {
+                        s.classList.add('hover-active');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => s.classList.remove('hover-active'));
+                highlightStars(currentRating);
+            });
+
+            star.addEventListener('click', function() {
+                currentRating = parseInt(this.dataset.value);
+                highlightStars(currentRating);
+                ratingMessage.textContent = `You've selected ${currentRating} star${currentRating > 1 ? 's' : ''}! Please submit your full feedback via the survey button.`;
+            });
+        });
+        
+        function highlightStars(rating) {
+            stars.forEach((star) => {
+                if (parseInt(star.dataset.value) <= rating) {
+                     star.classList.add('selected');
+                     star.classList.remove('hover-active');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
